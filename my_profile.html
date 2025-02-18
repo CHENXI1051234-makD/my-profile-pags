@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简介</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+        }
+        .container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+        .container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .container input[type="text"], .container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .container textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .container button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .container button:hover {
+            background-color: #218838;
+        }
+        .container button.reset {
+            background-color: #dc3545;
+        }
+        .container button.reset:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>个人简介</h1>
+    <img id="previewImage" src="https://via.placeholder.com/100" alt="个人照片">
+    <label for="name">姓名:</label>
+    <input type="text" id="name" placeholder="请输入您的姓名">
+
+    <label for="strengths">优点:</label>
+    <textarea id="strengths" placeholder="请输入您的优点"></textarea>
+
+    <label for="weaknesses">缺点:</label>
+    <textarea id="weaknesses" placeholder="请输入您的缺点"></textarea>
+
+    <label for="motto">座右铭:</label>
+    <input type="text" id="motto" placeholder="请输入您的座右铭">
+
+    <label for="photo">上传照片:</label>
+    <input type="file" id="photo" accept="image/*" onchange="previewImage(event)">
+
+    <button onclick="saveData()">保存</button>
+    <button class="reset" onclick="resetData()">重置</button>
+</div>
+
+<script>
+    // 页面加载时从本地存储加载数据
+    window.onload = function () {
+        const savedData = JSON.parse(localStorage.getItem('profileData'));
+        if (savedData) {
+            document.getElementById('name').value = savedData.name || '';
+            document.getElementById('strengths').value = savedData.strengths || '';
+            document.getElementById('weaknesses').value = savedData.weaknesses || '';
+            document.getElementById('motto').value = savedData.motto || '';
+            if (savedData.photo) {
+                document.getElementById('previewImage').src = savedData.photo;
+            }
+        }
+    };
+
+    // 预览上传的照片
+    function previewImage(event) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // 保存数据到本地存储
+    function saveData() {
+        const name = document.getElementById('name').value;
+        const strengths = document.getElementById('strengths').value;
+        const weaknesses = document.getElementById('weaknesses').value;
+        const motto = document.getElementById('motto').value;
+        const photo = document.getElementById('previewImage').src;
+
+        const profileData = {
+            name,
+            strengths,
+            weaknesses,
+            motto,
+            photo
+        };
+
+        localStorage.setItem('profileData', JSON.stringify(profileData));
+        alert('数据已保存！');
+    }
+
+    // 重置数据
+    function resetData() {
+        localStorage.removeItem('profileData');
+        document.getElementById('name').value = '';
+        document.getElementById('strengths').value = '';
+        document.getElementById('weaknesses').value = '';
+        document.getElementById('motto').value = '';
+        document.getElementById('previewImage').src = 'https://via.placeholder.com/100';
+        alert('数据已重置！');
+    }
+</script>
+
+</body>
+</html>
